@@ -1,60 +1,71 @@
-const express=require('express')
-const Course=require('../models/course')
-const router=express.Router()
+const express = require('express')
+const Course = require('../models/course')
+const router = express.Router()
 
-const courses=[
-    {id:2,name:"Data structure"},
-    {id:3,name:"Algorithm"},
-    {id:1,name:"Programming"},
-    {id:9,name:"Accounting"}
+const courses = [
+    { id: 2, name: "Data structure" },
+    { id: 3, name: "Algorithm" },
+    { id: 1, name: "Programming" },
+    { id: 9, name: "Accounting" }
 ]
 
 //get all course
-router.get('/',async(req,res)=>{
+router.get('/', async (req, res) => {
 
-    try{
+    try {
 
-        const courses= await Course.find();
+        const courses = await Course.find();
         res.status(200)
-        .send(courses)
-        
-    }catch(error){
-        res.send({
-            message:error
+            .json(courses)
+
+    } catch (error) {
+        res.json({
+            message: error
         })
     }
 
-    res.send(courses);
 });
 
 //find specific couse
-router.get('/:id',(req,res)=>{
-    const course=courses.find(c=>c.id===parseInt(req.params.id));
-    if(!course) {
-         res.status(404).send("The course with the given id was not found");
-         return;
+router.get('/:id', async (req, res) => {
+    console.log(req.params.id)
+
+    try {
+        const course = await Course.findById(req.params.id);
+        console.log(course)
+
+        if (!course) {
+            res.status(404).send("The course with the given id was not found");
+            return;
+        }
+        res.json(course);
+    } catch (error) {
+        res.json({
+            message:error
+        });
+
     }
-    res.send(course);
+
 });
 
 //create a new course
-router.post('/',async(req,res)=>{
+router.post('/', async (req, res) => {
     console.log(req.body)
 
-    const course=new Course({
-        title:req.body.title,
-        description:req.body.description,
+    const course = new Course({
+        title: req.body.title,
+        description: req.body.description,
     });
 
-    const savedCourse=await course.save();
-    try{
+    const savedCourse = await course.save();
+    try {
         res.status(201).json(savedCourse)
-    }catch(error){
+    } catch (error) {
         res.json({
-            message:error
+            message: error
         })
-    }   
+    }
 });
 
 
-module.exports=router;
+module.exports = router;
