@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
 
 });
 
-//find specific couse
+//find specific course
 router.get('/:id', async (req, res) => {
     console.log(req.params.id)
 
@@ -42,7 +42,7 @@ router.get('/:id', async (req, res) => {
         res.json(course);
     } catch (error) {
         res.json({
-            message:error
+            message: error
         });
 
     }
@@ -51,18 +51,38 @@ router.get('/:id', async (req, res) => {
 
 //delete course
 
-router.delete("/:id",async (req,res)=>{
-    try{
-        const deletedCourse=await course.remove({_id:req.params.id});
-        
+router.delete("/:id", async (req, res) => {
+    try {
+        const deletedCourse = await Course.remove({ _id: req.params.id });
+
         res.json(deletedCourse);
 
-    }catch(error){
+    } catch (error) {
         res.json({
-            message:error
+            message: error
         })
     }
 });
+
+//update course
+
+router.put("/:id", async (req, res) => {
+    try {
+        const updatedCourse = await Course.updateOne(
+            { 
+                _id: req.params.id
+             },
+            {
+                 $set: { description: req.body.description } 
+            }
+        );
+        res.json(updatedCourse);
+    } catch (error) {
+        res.json({
+            message: error
+        });
+    }
+})
 
 
 //create a new course
