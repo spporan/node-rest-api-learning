@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+const course = require('../models/course');
 const Course = require('../models/course')
 const router = express.Router()
 
@@ -47,6 +48,22 @@ router.get('/:id', async (req, res) => {
     }
 
 });
+
+//delete course
+
+router.delete("/:id",async (req,res)=>{
+    try{
+        const deletedCourse=await course.remove({_id:req.params.id});
+        
+        res.json(deletedCourse);
+
+    }catch(error){
+        res.json({
+            message:error
+        })
+    }
+});
+
 
 //create a new course
 router.post('/', async (req, res) => {
